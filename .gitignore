@@ -68,6 +68,9 @@ vcpkg_installed/
 Testing/
 .cache/
 
-#kecualikan file sampah ini
+# Proyek Eksekutabel
+app_output
+
+# OS & Editor Trash
 .DS_Store
 .vscode/

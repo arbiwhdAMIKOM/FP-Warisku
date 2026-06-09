@@ -1,0 +1,2 @@
+notaris1;123;Notaris
+ahliwaris1;123;AhliWaris
