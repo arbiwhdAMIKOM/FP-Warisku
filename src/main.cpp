@@ -5,21 +5,19 @@
 
 using namespace std;
 
-void menuCRUDOlehKoder2() {
-    cout << "\n[MENU CRUD AKTIF] - Bagian ini akan dikerjakan Koder 2...\n";
+void menuCRUDRahmat() {
+    cout << "\n[MENU CRUD AKTIF] - Rahmat kerja di sini...\n";
 }
 
-void menuKalkulatorOlehKoder3() {
-    cout << "\n[MENU KALKULATOR AKTIF] - Bagian ini akan dikerjakan Koder 3...\n";
+void menuKalkulatorLulut() {
+    cout << "\n[MENU KALKULATOR AKTIF] - Lulut kerja di sini...\n";
 }
 
 int main() {
     vector<User> databaseUser;
     
-    // 1. LOAD DATA DARI FILE .TXT SAAT APLIKASI DIJALANKAN
     loadUsersDariFile(databaseUser);
 
-    // LOOPING TERLUAR: Menjaga aplikasi tetap hidup sampai user memilih keluar aplikasi (0)
     while (true) {
         User userLogedIn;
         bool isSessionActive = false;
@@ -29,7 +27,6 @@ int main() {
         cout << "       SELAMAT DATANG DI WARISKU       \n";
         cout << "======================================\n";
 
-        // 2. GERBANG UTAMA (LOOPING SEBELUM LOGIN SUKSES)
         do {
             cout << "\n1. Login\n2. Register\n0. Keluar Aplikasi\nPilih opsi: ";
             getline(cin >> ws, menuAwalStr); 
@@ -41,16 +38,15 @@ int main() {
                 }
             } else if (menuAwalStr == "2") {
                 prosesRegister(databaseUser);
-                loadUsersDariFile(databaseUser); // Load ulang database agar akun baru langsung aktif
+                loadUsersDariFile(databaseUser); 
             } else if (menuAwalStr == "0") {
                 cout << "Keluar dari aplikasi. Sampai jumpa!\n";
-                return 0; // Menghentikan program dari layar awal
+                return 0; 
             } else {
                 cout << " [!] Error: Pilihan tidak valid!\n";
             }
         } while (!isSessionActive);
 
-        // 3. JIKA LOGIN SUKSES, MASUK MENU UTAMA BERDASARKAN ROLE
         cout << "\nLogin Sukses! Selamat Datang, " << userLogedIn.username << " (" << userLogedIn.role << ")\n";
         
         string pilihanMenuStr; 
@@ -64,7 +60,6 @@ int main() {
             } else if (userLogedIn.role == "AhliWaris") {
                 cout << "1. Lihat Pembagian Waris & Status Klaim\n";
             }
-            // 👇 MENU LOGOUT & KELUAR APLIKASI DIPISAH 👇
             cout << "9. Logout (Kembali ke Menu Awal)\n";
             cout << "0. Keluar Aplikasi\n";
             cout << "Pilih Menu: "; 
@@ -72,23 +67,23 @@ int main() {
 
             if (pilihanMenuStr == "1") {
                 if (userLogedIn.role == "Notaris") {
-                    menuCRUDOlehKoder2(); // RAHMAT UBAH INI BUAT NAMBAH FITUR
+                    menuCRUDRahmat(); // Rahmat: Ganti baris ini dengan fungsi CRUD mu
                 } else {
-                    cout << "\n[Fitur Ahli Waris] Menampilkan hasil porsi waris...\n"; // LULUT UBAH KODE INI HAPUS COUTNYA
+                    cout << "\n[Fitur Ahli Waris] Menampilkan hasil porsi waris...\n"; // Lulut: Ganti baris ini dengan fungsi cetak/read mu
                 }
             } else if (pilihanMenuStr == "2" && userLogedIn.role == "Notaris") {
-                menuKalkulatorOlehKoder3();
+                menuKalkulatorLulut(); // Lulut: Ganti baris ini dengan fungsi kalkulatormu
             } else if (pilihanMenuStr == "9") {
                 cout << "\nLogout berhasil. Kembali ke Menu Awal...\n";
-                isLogout = true; // Set flag true untuk memutus sesi dan kembali ke layar Login
+                isLogout = true; 
             } else if (pilihanMenuStr == "0") {
                 cout << "\nKeluar dari aplikasi. Sampai jumpa!\n";
-                return 0; // Menghentikan program sepenuhnya dari dalam Menu Utama
+                return 0; 
             } else {
                 cout << " [!] Error: Pilihan tidak valid!\n";
             }
 
-        } while (!isLogout); // Keluar dari loop menu utama jika user memilih logout (9)
+        } while (!isLogout); 
     }
 
     return 0;

@@ -46,15 +46,14 @@ void simpanUserKeFile(const User& userBaru) {
     // 1. Buka file dalam mode baca (ifstream) untuk mengintip isinya
     ifstream fileIn("../database/user.txt");
     if (fileIn.is_open()) {
-        fileIn.seekg(0, ios::end); // Pergi ke ujung akhir file
-        streampos ukuranFile = fileIn.tellg(); // Cek ada berapa banyak karakter
+        fileIn.seekg(0, ios::end);
+        streampos ukuranFile = fileIn.tellg();
 
-        if (ukuranFile > 0) { // Jika file tidak kosong
-            fileIn.seekg(-1, ios::end); // Mundur tepat 1 karakter dari ujung
+        if (ukuranFile > 0) {
+            fileIn.seekg(-1, ios::end);
             char karakterTerakhir;
-            fileIn.get(karakterTerakhir); // Ambil karakter tersebut
+            fileIn.get(karakterTerakhir);
 
-            // Jika karakter terakhirnya bukan "Enter" (\n), berarti nanggung
             if (karakterTerakhir != '\n') {
                 butuhEnterBaru = true;
             }
@@ -84,7 +83,7 @@ void prosesRegister(vector<User>& daftarUser) {
 
     // 1. Validasi Username (Alphanumeric & Length)
     while (true) {
-        cout << " Masukkan Username Baru (4-12 karakter huruf/angka): ";
+        cout << " Masukkan Username Baru (4-12 huruf/angka): ";
         getline(cin >> ws, userBaru.username); 
 
         if (!isValidUsername(userBaru.username)) {
@@ -103,7 +102,7 @@ void prosesRegister(vector<User>& daftarUser) {
         if (usernameSudahAda) {
             cout << " [!] Gagal: Username '" << userBaru.username << "' sudah digunakan.\n";
         } else {
-            break; // Loop berhenti jika valid dan unik
+            break;
         }
     }
 
