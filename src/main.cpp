@@ -2,6 +2,7 @@
 #include <vector>
 #include "../include/models.h"
 #include "../include/auth.h"
+#include "../include/logic.h"
 
 using namespace std;
 
@@ -20,10 +21,6 @@ void jedaLayar() {
 
 void menuCRUDRahmat() {
     cout << "\n[MENU CRUD AKTIF] - Rahmat kerja di sini...\n";
-}
-
-void menuKalkulatorLulut() {
-    cout << "\n[MENU KALKULATOR AKTIF] - Lulut kerja di sini...\n";
 }
 
 int main() {
@@ -48,15 +45,18 @@ int main() {
                 isSessionActive = prosesLogin(databaseUser, userLogedIn);
                 if (!isSessionActive) {
                     cout << "Login Gagal! Username atau Password salah.\n";
+                    jedaLayar();
                 }
             } else if (menuAwalStr == "2") {
                 prosesRegister(databaseUser);
                 loadUsersDariFile(databaseUser); 
+                jedaLayar();
             } else if (menuAwalStr == "0") {
                 cout << "Keluar dari aplikasi. Sampai jumpa!\n";
                 return 0; 
             } else {
                 cout << " [!] Error: Pilihan tidak valid!\n";
+                jedaLayar();
             }
         } while (!isSessionActive);
 
@@ -74,6 +74,7 @@ int main() {
             if (userLogedIn.role == "Notaris") {
                 cout << "1. Kelola Data Aset & Keluarga\n";
                 cout << "2. Hitung & Export Pembagian Waris\n";
+                cout << "3. Verifikasi Klaim Ahli Waris\n";
             } else if (userLogedIn.role == "AhliWaris") {
                 cout << "1. Lihat Pembagian Waris & Status Klaim\n";
             }
@@ -85,11 +86,17 @@ int main() {
             if (pilihanMenuStr == "1") {
                 if (userLogedIn.role == "Notaris") {
                     menuCRUDRahmat(); // Rahmat: Ganti baris ini dengan fungsi CRUD
+                    jedaLayar();
                 } else {
-                    cout << "\n[Fitur Ahli Waris] Menampilkan hasil porsi waris...\n"; // Lulut: Ganti baris ini dengan fungsi cetak/read mu
+                    lihatInformasiPorsiWaris();
+                    jedaLayar();
                 }
             } else if (pilihanMenuStr == "2" && userLogedIn.role == "Notaris") {
-                menuKalkulatorLulut(); // Lulut: Ganti baris ini dengan fungsi kalkulatormu
+                menuKalkulatorWaris();
+                jedaLayar();
+            } else if (pilihanMenuStr == "3" && userLogedIn.role == "Notaris") {
+                menuVerifikasiKlaimNotaris();
+                jedaLayar();
             } else if (pilihanMenuStr == "9") {
                 cout << "\nLogout berhasil. Kembali ke Menu Awal...\n";
                 isLogout = true; 
@@ -99,6 +106,7 @@ int main() {
                 return 0; 
             } else {
                 cout << " [!] Error: Pilihan tidak valid!\n";
+                jedaLayar();
             }
 
         } while (!isLogout); 
