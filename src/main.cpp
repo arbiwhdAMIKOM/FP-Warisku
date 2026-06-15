@@ -60,14 +60,16 @@ int main() {
             }
         } while (!isSessionActive);
 
+            clearScreen();
+            cout << "Login Sukses! Selamat Datang, " << userLogedIn.username << " (" << userLogedIn.role << ")\n";
+            jedaLayar();
+
         string pilihanMenuStr; 
         bool isLogout = false;
 
         do {
             clearScreen();
-            cout << "Login Sukses! Selamat Datang, " << userLogedIn.username << " (" << userLogedIn.role << ")\n";
-            jedaLayar();
-            clearScreen();
+            cout << "\nLogin Sebagai: " << userLogedIn.username << " (" << userLogedIn.role << ")\n";
             cout << "\n============ MENU UTAMA ============\n";
             if (userLogedIn.role == "Notaris") {
                 cout << "1. Kelola Data Aset & Keluarga\n";
@@ -82,12 +84,12 @@ int main() {
 
             if (pilihanMenuStr == "1") {
                 if (userLogedIn.role == "Notaris") {
-                    menuCRUDRahmat(); 
+                    menuCRUDRahmat(); // Rahmat: Ganti baris ini dengan fungsi CRUD
                 } else {
-                    cout << "\n[Fitur Ahli Waris] Menampilkan hasil porsi waris...\n"; 
+                    cout << "\n[Fitur Ahli Waris] Menampilkan hasil porsi waris...\n"; // Lulut: Ganti baris ini dengan fungsi cetak/read mu
                 }
             } else if (pilihanMenuStr == "2" && userLogedIn.role == "Notaris") {
-                menuKalkulatorLulut(); 
+                menuKalkulatorLulut(); // Lulut: Ganti baris ini dengan fungsi kalkulatormu
             } else if (pilihanMenuStr == "9") {
                 cout << "\nLogout berhasil. Kembali ke Menu Awal...\n";
                 isLogout = true; 
