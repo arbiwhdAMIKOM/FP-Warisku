@@ -7,6 +7,8 @@
 
 using namespace std;
 
+void clearScr();
+
 bool isValidUsername(const string& username) {
     if (username.length() < 4 || username.length() > 12) return false;
     for (char c : username) {
@@ -15,7 +17,6 @@ bool isValidUsername(const string& username) {
     return true;
 }
 
-// Validasi Keamanan: Memastikan tidak ada karakter titik koma (;)
 bool isSafeFromDelimiter(const string& str) {
     return str.find(';') == string::npos && !str.empty();
 }
@@ -77,6 +78,7 @@ void prosesRegister(vector<User>& daftarUser) {
     string inputRole;
     bool usernameSudahAda;
 
+    clearScr();
     cout << "\n==================================\n";
     cout << "        HALAMAN REGISTRASI        \n";
     cout << "==================================\n";
@@ -142,6 +144,7 @@ void prosesRegister(vector<User>& daftarUser) {
 bool prosesLogin(const vector<User>& daftarUser, User& userAktif) {
     string inputUsername, inputPassword;
     
+    clearScr();
     cout << "\n==================================\n";
     cout << "          HALAMAN LOGIN           \n";
     cout << "==================================\n";

@@ -19,6 +19,9 @@ bool ibuAda = false;
 double porsiPerAnakLaki = 0;
 double porsiPerAnakPerempuan = 0;
 
+void clearScr();
+void jeda();
+
 bool statusPerhitungan = false;
 string statusKlaim = "BELUM DIKLAIM";
 string nomorRekeningAhliWaris = "";
@@ -109,6 +112,7 @@ void menuKalkulatorWaris() {
 void lihatInformasiPorsiWaris() {
     if (!statusPerhitungan) {
         cout << "\n[!] Notaris belum melakukan kalkulasi data harta waris.\n";
+        jeda();
         return;
     }
 
@@ -147,7 +151,6 @@ void menuVerifikasiKlaimNotaris() {
     cout << "\n========================================" << endl;
     cout << "       HALAMAN VERIFIKASI KLAIM        " << endl;
     cout << "========================================" << endl;
-
     if (statusKlaim == "BELUM DIKLAIM" || statusKlaim == "SIAP DIKLAIM") {
         cout << "[Data] Belum ada berkas berkas pengajuan pencairan dari Ahli Waris.\n";
     } 
@@ -170,6 +173,7 @@ void menuVerifikasiKlaimNotaris() {
         cout << "[Data] Semua klaim dana waris keluarga ini telah SELESAI diproses.\n";
     }
     cout << "========================================" << endl;
+    jeda();
 }
 
 // Ekspor Laporan

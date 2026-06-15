@@ -7,11 +7,8 @@
 
 using namespace std;
 
-// ============================================================================
-// // CATATAN: TAMBAHAN FORWARD DECLARATION AGAR MAIN.CPP BISA MEMBACA FUNGSI UTILITY DARI CRUD.CPP
 void jeda();
 void clearScr();
-// ============================================================================
 
 void menuCRUDRahmat() {
     string namaFile = "data_waris.txt";
@@ -19,13 +16,13 @@ void menuCRUDRahmat() {
     vector<Aset> daftarAset;
     vector<AhliWaris> daftarWaris;
 
-    // Load data lama saat menu pertama kali dibuka
     loadSemuaData(namaFile, namaPewaris, daftarAset, daftarWaris);
 
     string pilihanCRUD;
     while (true) {
+        clearScr();
         cout << "\n======================================\n";
-        cout << "     MENU KELOLA DATA (CRUD RAHMAT)   \n";
+        cout << "     MENU KELOLA DATA   \n";
         cout << "======================================\n";
         cout << "1. Input / Tambah Data Kasus Baru\n";
         cout << "2. Tampilkan Ringkasan Berkas Kasus\n";
@@ -36,15 +33,19 @@ void menuCRUDRahmat() {
         getline(cin >> ws, pilihanCRUD);
 
         if (pilihanCRUD == "1") {
+            clearScr();
             prosesInputSistemWarisan(namaFile, namaPewaris, daftarAset, daftarWaris);
             jeda();
         } else if (pilihanCRUD == "2") {
+            clearScr();
             tampilkanRingkasanData(namaPewaris, daftarAset, daftarWaris);
             jeda();
         } else if (pilihanCRUD == "3") {
+            clearScr();
             ubahData(namaFile, namaPewaris, daftarAset, daftarWaris);
             jeda();
         } else if (pilihanCRUD == "4") {
+            clearScr();
             hapusData(namaFile, namaPewaris, daftarAset, daftarWaris);
             jeda();
         } else if (pilihanCRUD == "0") {
@@ -57,7 +58,6 @@ void menuCRUDRahmat() {
 }
 
 void menuKalkulatorLulut() {
-    
 }
 
 int main() {
@@ -70,6 +70,7 @@ int main() {
         bool isSessionActive = false;
         string menuAwalStr; 
 
+        clearScr();
         cout << "======================================\n";
         cout << "       SELAMAT DATANG DI WARISKU       \n";
         cout << "======================================\n";
@@ -94,12 +95,16 @@ int main() {
             }
         } while (!isSessionActive);
 
+        clearScr();
         cout << "\nLogin Sukses! Selamat Datang, " << userLogedIn.username << " (" << userLogedIn.role << ")\n";
-        
+        jeda();
+
         string pilihanMenuStr; 
         bool isLogout = false;
 
         do {
+            clearScr();
+            cout << "\n Login Sebagai: " << userLogedIn.username << " (" << userLogedIn.role << ")\n";
             cout << "\n============ MENU UTAMA ============\n";
             if (userLogedIn.role == "Notaris") {
                 cout << "1. Kelola Data Aset & Keluarga\n";
@@ -124,13 +129,19 @@ int main() {
             } else if (pilihanMenuStr == "3" && userLogedIn.role == "Notaris") { // <-- Tambahan eksekusi menu verifikasi klaim jika diperlukan
                 menuVerifikasiKlaimNotaris();
             } else if (pilihanMenuStr == "9") {
+                clearScr();
                 cout << "\nLogout berhasil. Kembali ke Menu Awal...\n";
                 isLogout = true; 
+                jeda();
             } else if (pilihanMenuStr == "0") {
+                clearScr();
                 cout << "\nKeluar dari aplikasi. Sampai jumpa!\n";
+                jeda();
                 return 0; 
             } else {
+                clearScr();
                 cout << " [!] Error: Pilihan tidak valid!\n";
+                jeda();
             }
 
         } while (!isLogout); 
