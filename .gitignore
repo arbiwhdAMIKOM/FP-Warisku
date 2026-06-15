@@ -68,9 +68,13 @@ vcpkg_installed/
 Testing/
 .cache/
 
+<<<<<<< HEAD
 # Proyek Eksekutabel
 app_output
 
 # OS & Editor Trash
+=======
+#kecualikan file sampah ini
+>>>>>>> origin/feat-logic
 .DS_Store
 .vscode/
