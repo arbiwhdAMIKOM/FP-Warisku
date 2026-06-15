@@ -2,11 +2,7 @@
 #include <vector>
 #include "../include/models.h"
 #include "../include/auth.h"
-<<<<<<< HEAD
 #include "../include/crud.h"
-=======
-#include "../include/logic.h"
->>>>>>> a03c646eb54482954a7147f12abc7ff832a0bb36
 
 using namespace std;
 
