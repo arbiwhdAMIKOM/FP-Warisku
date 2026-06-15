@@ -2,6 +2,7 @@
 #include <vector>
 #include "../include/models.h"
 #include "../include/auth.h"
+#include "../include/crud.h"
 
 using namespace std;
 
@@ -19,7 +20,64 @@ void jedaLayar() {
 }
 
 void menuCRUDRahmat() {
-    cout << "\n[MENU CRUD AKTIF] - Rahmat kerja di sini...\n";
+    string namaFile, namaPewaris;
+    vector<Aset> daftarAset;
+    vector<AhliWaris> daftarKeluarga;
+
+    cout << "==========================================\n";
+    cout << "         SISTEM NOTARIS WARIS             \n";
+    cout << "==========================================\n";
+    cout << " Masukkan Nama File Kasus Pengguna \n";
+    cout << " (Contoh: Budi_Santoso atau Kasus_A): ";
+    cin >> namaFile;
+    namaFile += ".txt"; // Otomatis sistem menambahkan ekstensi .txt
+
+    // 1. Ambil data spesifik dari file kasus tersebut
+    loadSemuaData(namaFile, namaPewaris, daftarAset, daftarKeluarga);
+
+    int menu;
+    do {
+        cout << "\n--- MENU KASUS: " << (namaPewaris == "-" ? "KASUS BARU" : namaPewaris) << " ---\n";
+        cout << " 1. Tambah Data Baru (Aset / Keluarga)\n";
+        cout << " 2. Tampilkan Ringkasan Data & Porsi Waris\n";
+        cout << " 3. Edit Data\n";
+        cout << " 4. Hapus Data\n";
+        cout << " 5. Ganti Kasus / Keluar\n";
+        cout << " Pilih Menu: ";
+        cin >> menu;
+
+        switch(menu) {
+            case 1:
+                clearScreen();
+                prosesInputSistemWarisan(namaFile, namaPewaris, daftarAset, daftarKeluarga);
+                jedaLayar();
+                break;
+            case 2:
+                clearScreen();
+                tampilkanRingkasanData(namaPewaris, daftarAset, daftarKeluarga);
+                jedaLayar();
+                break;
+            case 3:
+                clearScreen();
+                ubahData(namaFile, namaPewaris, daftarAset, daftarKeluarga);
+                jedaLayar();
+                break;
+            case 4:
+                clearScreen();
+                hapusData(namaFile, namaPewaris, daftarAset, daftarKeluarga);
+                jedaLayar();
+                break;
+            case 5:
+                clearScreen();
+                cout << " Sesi Kasus Ditutup.\n";
+                jedaLayar();
+                break;
+            default:
+                clearScreen();
+                cout << " [!] Menu salah.\n";
+                jedaLayar();
+        }
+    } while (menu != 5);;
 }
 
 void menuKalkulatorLulut() {
