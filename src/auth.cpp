@@ -87,7 +87,7 @@ void prosesRegister(vector<User>& daftarUser) {
         getline(cin >> ws, userBaru.username); 
 
         if (!isValidUsername(userBaru.username)) {
-            cout << " [!] Error: Username tidak valid. Gunakan 4-12 huruf/angka tanpa spasi atau simbol.\n";
+            cout << " [!] Error: Username tidak valid. Gunakan 4-12 tanpa spasi atau simbol.\n";
             continue;
         }
 
@@ -114,7 +114,7 @@ void prosesRegister(vector<User>& daftarUser) {
         if (!isSafeFromDelimiter(userBaru.password)) {
             cout << " [!] Error: Password tidak boleh kosong atau mengandung titik koma (;).\n";
         } else {
-            break; // Loop berhenti jika aman
+            break;
         }
     }
     
