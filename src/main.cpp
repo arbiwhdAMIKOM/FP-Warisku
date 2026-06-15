@@ -2,12 +2,58 @@
 #include <vector>
 #include "../include/models.h"
 #include "../include/auth.h"
+#include "../include/crud.h"
 #include "../include/logic.h"
 
 using namespace std;
 
+// ============================================================================
+// // CATATAN: TAMBAHAN FORWARD DECLARATION AGAR MAIN.CPP BISA MEMBACA FUNGSI UTILITY DARI CRUD.CPP
+void jeda();
+void clearScr();
+// ============================================================================
+
 void menuCRUDRahmat() {
-    cout << "\n[MENU CRUD AKTIF] - Rahmat kerja di sini...\n";
+    string namaFile = "data_waris.txt";
+    string namaPewaris = "-";
+    vector<Aset> daftarAset;
+    vector<AhliWaris> daftarWaris;
+
+    // Load data lama saat menu pertama kali dibuka
+    loadSemuaData(namaFile, namaPewaris, daftarAset, daftarWaris);
+
+    string pilihanCRUD;
+    while (true) {
+        cout << "\n======================================\n";
+        cout << "     MENU KELOLA DATA (CRUD RAHMAT)   \n";
+        cout << "======================================\n";
+        cout << "1. Input / Tambah Data Kasus Baru\n";
+        cout << "2. Tampilkan Ringkasan Berkas Kasus\n";
+        cout << "3. Edit / Ubah Komponen Data Kasus\n";
+        cout << "4. Hapus Komponen Data Kasus\n";
+        cout << "0. Kembali ke Menu Utama\n";
+        cout << "Pilih Opsi: ";
+        getline(cin >> ws, pilihanCRUD);
+
+        if (pilihanCRUD == "1") {
+            prosesInputSistemWarisan(namaFile, namaPewaris, daftarAset, daftarWaris);
+            jeda();
+        } else if (pilihanCRUD == "2") {
+            tampilkanRingkasanData(namaPewaris, daftarAset, daftarWaris);
+            jeda();
+        } else if (pilihanCRUD == "3") {
+            ubahData(namaFile, namaPewaris, daftarAset, daftarWaris);
+            jeda();
+        } else if (pilihanCRUD == "4") {
+            hapusData(namaFile, namaPewaris, daftarAset, daftarWaris);
+            jeda();
+        } else if (pilihanCRUD == "0") {
+            break;
+        } else {
+            cout << " [!] Error: Pilihan tidak valid!\n";
+            jeda();
+        }
+    }
 }
 
 void menuKalkulatorLulut() {
@@ -58,6 +104,7 @@ int main() {
             if (userLogedIn.role == "Notaris") {
                 cout << "1. Kelola Data Aset & Keluarga\n";
                 cout << "2. Hitung & Export Pembagian Waris\n";
+                cout << "3. Verifikasi Klaim Ahli Waris\n"; // <-- Tambahan opsi menu verifikasi klaim jika diperlukan
             } else if (userLogedIn.role == "AhliWaris") {
                 cout << "1. Lihat Pembagian Waris & Status Klaim\n";
             }
@@ -68,12 +115,14 @@ int main() {
 
             if (pilihanMenuStr == "1") {
                 if (userLogedIn.role == "Notaris") {
-                    menuCRUDRahmat(); // Rahmat: Ganti baris ini dengan fungsi CRUD mu
+                    menuCRUDRahmat(); 
                 } else {
                     lihatInformasiPorsiWaris(); 
                 }
             } else if (pilihanMenuStr == "2" && userLogedIn.role == "Notaris") {
                 menuKalkulatorWaris();
+            } else if (pilihanMenuStr == "3" && userLogedIn.role == "Notaris") { // <-- Tambahan eksekusi menu verifikasi klaim jika diperlukan
+                menuVerifikasiKlaimNotaris();
             } else if (pilihanMenuStr == "9") {
                 cout << "\nLogout berhasil. Kembali ke Menu Awal...\n";
                 isLogout = true; 

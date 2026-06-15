@@ -1,4 +1,5 @@
 #include "../include/crud.h"
+#include "../include/logic.h"
 #include <iostream>
 #include <fstream>
 #include <sstream>
@@ -18,19 +19,6 @@ void clearScr() {
 void jeda() {
     cout << "\nTekan \"Enter\" untuk melanjutkan...";
     cin.get(); 
-}
-
-string formatRupiah(double nilai) {
-    string strNilai = to_string(static_cast<long long>(nilai));
-    string hasil = "";
-    int hitung = 0;
-    for (int i = strNilai.length() - 1; i >= 0; i--) {
-        hasil += strNilai[i];
-        hitung++;
-        if (hitung % 3 == 0 && i != 0) hasil += '.';
-    }
-    reverse(hasil.begin(), hasil.end());
-    return "Rp " + hasil;
 }
 
 void loadSemuaData(const string& namaFile, string& namaPewaris, vector<Aset>& daftarAset, vector<AhliWaris>& daftarWaris) {
