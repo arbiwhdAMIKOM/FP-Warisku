@@ -9,6 +9,14 @@ void menuCRUDRahmat() {
     cout << "\n[MENU CRUD AKTIF] - Rahmat kerja di sini...\n";
 }
 
+void clearScreen() {
+    #ifdef _WIN32
+        system("cls");
+    #else
+        system("clear");
+    #endif
+}
+
 void menuKalkulatorLulut() {
     cout << "\n[MENU KALKULATOR AKTIF] - Lulut kerja di sini...\n";
 }
@@ -22,6 +30,8 @@ int main() {
         User userLogedIn;
         bool isSessionActive = false;
         string menuAwalStr; 
+        
+        clearScreen();
 
         cout << "======================================\n";
         cout << "       SELAMAT DATANG DI WARISKU       \n";
@@ -30,7 +40,6 @@ int main() {
         do {
             cout << "\n1. Login\n2. Register\n0. Keluar Aplikasi\nPilih opsi: ";
             getline(cin >> ws, menuAwalStr); 
-
             if (menuAwalStr == "1") {
                 isSessionActive = prosesLogin(databaseUser, userLogedIn);
                 if (!isSessionActive) {
@@ -51,7 +60,7 @@ int main() {
         
         string pilihanMenuStr; 
         bool isLogout = false;
-
+        clearScreen();
         do {
             cout << "\n============ MENU UTAMA ============\n";
             if (userLogedIn.role == "Notaris") {
