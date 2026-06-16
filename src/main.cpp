@@ -57,12 +57,8 @@ void menuCRUDRahmat() {
     }
 }
 
-void menuKalkulatorLulut() {
-}
-
 int main() {
     vector<User> databaseUser;
-    
     loadUsersDariFile(databaseUser);
 
     while (true) {
@@ -88,7 +84,9 @@ int main() {
                 prosesRegister(databaseUser);
                 loadUsersDariFile(databaseUser); 
             } else if (menuAwalStr == "0") {
+                clearScr();
                 cout << "Keluar dari aplikasi. Sampai jumpa!\n";
+                jeda();
                 return 0; 
             } else {
                 cout << " [!] Error: Pilihan tidak valid!\n";
@@ -107,41 +105,61 @@ int main() {
             cout << "\n Login Sebagai: " << userLogedIn.username << " (" << userLogedIn.role << ")\n";
             cout << "\n============ MENU UTAMA ============\n";
             if (userLogedIn.role == "Notaris") {
-                cout << "1. Kelola Data Aset & Keluarga\n";
-                cout << "2. Hitung & Export Pembagian Waris\n";
-                cout << "3. Verifikasi Klaim Ahli Waris\n"; // <-- Tambahan opsi menu verifikasi klaim jika diperlukan
+                cout << "1. Kelola Data Aset & Keluarga (CRUD)\n";
+                cout << "2. Hitung Pembagian Harta Waris\n";
+                cout << "3. Cetak Akta Resmi Pembagian Waris (.csv)\n";
+                cout << "4. Verifikasi Klaim Ahli Waris\n";
             } else if (userLogedIn.role == "AhliWaris") {
                 cout << "1. Lihat Pembagian Waris & Status Klaim\n";
+                cout << "2. Unduh Surat Keterangan Ahli Waris (.csv)\n";
             }
             cout << "9. Logout (Kembali ke Menu Awal)\n";
             cout << "0. Keluar Aplikasi\n";
             cout << "Pilih Menu: "; 
             getline(cin >> ws, pilihanMenuStr);
 
-            if (pilihanMenuStr == "1") {
-                if (userLogedIn.role == "Notaris") {
+            if (userLogedIn.role == "Notaris") {
+                if (pilihanMenuStr == "1") {
                     menuCRUDRahmat(); 
+                } else if (pilihanMenuStr == "2") {
+                    clearScr();
+                    menuKalkulatorWaris();
+                } else if (pilihanMenuStr == "3") {
+                    clearScr();
+                    eksporSuratNotaris();
+                } else if (pilihanMenuStr == "4") {
+                    clearScr();
+                    menuVerifikasiKlaimNotaris();
+                } else if (pilihanMenuStr == "9") {
+                    isLogout = true;
+                } else if (pilihanMenuStr == "0") {
+                    clearScr();
+                    cout << "\nKeluar dari aplikasi. Sampai jumpa, Notaris!\n";
+                    jeda();
+                    return 0;
                 } else {
-                    lihatInformasiPorsiWaris(); 
+                    cout << " [!] Error: Pilihan tidak valid!\n";
+                    jeda();
                 }
-            } else if (pilihanMenuStr == "2" && userLogedIn.role == "Notaris") {
-                menuKalkulatorWaris();
-            } else if (pilihanMenuStr == "3" && userLogedIn.role == "Notaris") { // <-- Tambahan eksekusi menu verifikasi klaim jika diperlukan
-                menuVerifikasiKlaimNotaris();
-            } else if (pilihanMenuStr == "9") {
-                clearScr();
-                cout << "\nLogout berhasil. Kembali ke Menu Awal...\n";
-                isLogout = true; 
-                jeda();
-            } else if (pilihanMenuStr == "0") {
-                clearScr();
-                cout << "\nKeluar dari aplikasi. Sampai jumpa!\n";
-                jeda();
-                return 0; 
-            } else {
-                clearScr();
-                cout << " [!] Error: Pilihan tidak valid!\n";
-                jeda();
+            } 
+            else if (userLogedIn.role == "AhliWaris") {
+                if (pilihanMenuStr == "1") {
+                    clearScr();
+                    lihatInformasiPorsiWaris(); 
+                } else if (pilihanMenuStr == "2") {
+                    clearScr();
+                    eksporSuratAhliWaris();
+                } else if (pilihanMenuStr == "9") {
+                    isLogout = true;
+                } else if (pilihanMenuStr == "0") {
+                    clearScr();
+                    cout << "\nKeluar dari aplikasi. Sampai jumpa, Notaris!\n";
+                    jeda();
+                    return 0;
+                } else {
+                    cout << " [!] Error: Pilihan tidak valid!\n";
+                    jeda();
+                }
             }
 
         } while (!isLogout); 
