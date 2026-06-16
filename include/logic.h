@@ -8,7 +8,6 @@ extern double bagianIstri;
 extern double bagianAyah;
 extern double bagianIbu;
 
-// Variabel Kontrak untuk Tim CRUD
 extern int jumlahAnakLaki;
 extern int jumlahAnakPerempuan;
 extern bool ayahAda;
@@ -24,7 +23,11 @@ extern std::string nomorRekeningAhliWaris;
 void menuKalkulatorWaris();
 void lihatInformasiPorsiWaris();
 void menuVerifikasiKlaimNotaris(); 
-void eksporKeCSV();
+
+// Dua fungsi ekspor surat resmi yang terpisah
+void eksporSuratNotaris();
+void eksporSuratAhliWaris();
+
 std::string formatRupiah(double angka);
 
 #endif
