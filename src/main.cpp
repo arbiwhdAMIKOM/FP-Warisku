@@ -1,62 +1,21 @@
 #include <iostream>
 #include <vector>
+#include <filesystem> 
 #include "../include/models.h"
 #include "../include/auth.h"
 #include "../include/crud.h"
 #include "../include/logic.h"
+#include "../include/ui.h"
 
 using namespace std;
+namespace fs = std::filesystem; 
 
 void jeda();
 void clearScr();
 
-void menuCRUDRahmat() {
-    string namaFile = "data_waris.txt";
-    string namaPewaris = "-";
-    vector<Aset> daftarAset;
-    vector<AhliWaris> daftarWaris;
-
-    loadSemuaData(namaFile, namaPewaris, daftarAset, daftarWaris);
-
-    string pilihanCRUD;
-    while (true) {
-        clearScr();
-        cout << "\n======================================\n";
-        cout << "     MENU KELOLA DATA   \n";
-        cout << "======================================\n";
-        cout << "1. Input / Tambah Data Kasus Baru\n";
-        cout << "2. Tampilkan Ringkasan Berkas Kasus\n";
-        cout << "3. Edit / Ubah Komponen Data Kasus\n";
-        cout << "4. Hapus Komponen Data Kasus\n";
-        cout << "0. Kembali ke Menu Utama\n";
-        cout << "Pilih Opsi: ";
-        getline(cin >> ws, pilihanCRUD);
-
-        if (pilihanCRUD == "1") {
-            clearScr();
-            prosesInputSistemWarisan(namaFile, namaPewaris, daftarAset, daftarWaris);
-            jeda();
-        } else if (pilihanCRUD == "2") {
-            clearScr();
-            tampilkanRingkasanData(namaPewaris, daftarAset, daftarWaris);
-            jeda();
-        } else if (pilihanCRUD == "3") {
-            clearScr();
-            ubahData(namaFile, namaPewaris, daftarAset, daftarWaris);
-            jeda();
-        } else if (pilihanCRUD == "4") {
-            clearScr();
-            hapusData(namaFile, namaPewaris, daftarAset, daftarWaris);
-            jeda();
-        } else if (pilihanCRUD == "0") {
-            break;
-        } else {
-            cout << " [!] Error: Pilihan tidak valid!\n";
-            jeda();
-        }
-    }
-}
-
+// ==========================================
+// MAIN & MENU UTAMA APLIKASI
+// ==========================================
 int main() {
     vector<User> databaseUser;
     loadUsersDariFile(databaseUser);
@@ -64,106 +23,113 @@ int main() {
     while (true) {
         User userLogedIn;
         bool isSessionActive = false;
-        string menuAwalStr; 
-
-        clearScr();
-        cout << "======================================\n";
-        cout << "       SELAMAT DATANG DI WARISKU       \n";
-        cout << "======================================\n";
 
         do {
-            cout << "\n1. Login\n2. Register\n0. Keluar Aplikasi\nPilih opsi: ";
-            getline(cin >> ws, menuAwalStr); 
-
-            if (menuAwalStr == "1") {
+            int pilihanAwal = menuInteraktif("SELAMAT DATANG DI WARISKU", {"Login Akun", "Register Akun Baru", "Keluar Aplikasi"});
+            if (pilihanAwal == 0) {
                 isSessionActive = prosesLogin(databaseUser, userLogedIn);
-                if (!isSessionActive) {
-                    cout << "Login Gagal! Username atau Password salah.\n";
-                }
-            } else if (menuAwalStr == "2") {
+                if (!isSessionActive) { cout << " [!] Login Gagal! Username/Password salah.\n"; cin.get(); }
+            } else if (pilihanAwal == 1) {
                 prosesRegister(databaseUser);
                 loadUsersDariFile(databaseUser); 
-            } else if (menuAwalStr == "0") {
-                clearScr();
-                cout << "Keluar dari aplikasi. Sampai jumpa!\n";
-                jeda();
-                return 0; 
-            } else {
-                cout << " [!] Error: Pilihan tidak valid!\n";
+                cin.get();
+            } else if (pilihanAwal == 2) {
+                system("clear"); cout << "\nKeluar dari aplikasi. Sampai jumpa!\n"; cin.get(); return 0; 
             }
         } while (!isSessionActive);
 
-        clearScr();
-        cout << "\nLogin Sukses! Selamat Datang, " << userLogedIn.username << " (" << userLogedIn.role << ")\n";
-        jeda();
+        system("clear");
+        cout << "\n [v] Login Sukses! Selamat Datang, " << userLogedIn.username << " (" << userLogedIn.role << ")\n";
+        cin.get();
 
-        string pilihanMenuStr; 
         bool isLogout = false;
+        string kasusAktif = "kasus_default.txt"; 
 
         do {
-            clearScr();
-            cout << "\n Login Sebagai: " << userLogedIn.username << " (" << userLogedIn.role << ")\n";
-            cout << "\n============ MENU UTAMA ============\n";
-            if (userLogedIn.role == "Notaris") {
-                cout << "1. Kelola Data Aset & Keluarga (CRUD)\n";
-                cout << "2. Hitung Pembagian Harta Waris\n";
-                cout << "3. Cetak Akta Resmi Pembagian Waris (.csv)\n";
-                cout << "4. Verifikasi Klaim Ahli Waris\n";
-            } else if (userLogedIn.role == "AhliWaris") {
-                cout << "1. Lihat Pembagian Waris & Status Klaim\n";
-                cout << "2. Unduh Surat Keterangan Ahli Waris (.csv)\n";
-            }
-            cout << "9. Logout (Kembali ke Menu Awal)\n";
-            cout << "0. Keluar Aplikasi\n";
-            cout << "Pilih Menu: "; 
-            getline(cin >> ws, pilihanMenuStr);
+            string header = "MENU " + userLogedIn.role + " | Kasus: " + kasusAktif;
+            vector<string> opsiMenu;
 
             if (userLogedIn.role == "Notaris") {
-                if (pilihanMenuStr == "1") {
-                    menuCRUDRahmat(); 
-                } else if (pilihanMenuStr == "2") {
-                    clearScr();
-                    menuKalkulatorWaris();
-                } else if (pilihanMenuStr == "3") {
-                    clearScr();
-                    eksporSuratNotaris();
-                } else if (pilihanMenuStr == "4") {
-                    clearScr();
-                    menuVerifikasiKlaimNotaris();
-                } else if (pilihanMenuStr == "9") {
-                    isLogout = true;
-                } else if (pilihanMenuStr == "0") {
-                    clearScr();
-                    cout << "\nKeluar dari aplikasi. Sampai jumpa, Notaris!\n";
-                    jeda();
-                    return 0;
-                } else {
-                    cout << " [!] Error: Pilihan tidak valid!\n";
-                    jeda();
+                opsiMenu = {
+                    "Pilih Berkas Kasus Keluarga",
+                    "Kelola Data Aset & Keluarga (CRUD)",
+                    "Hitung Pembagian Harta Waris",
+                    "Cetak Akta Resmi Pembagian Waris (HTML/PDF)",
+                    "Verifikasi Klaim Ahli Waris",
+                    "Logout", "Keluar Aplikasi"
+                };
+            } else if (userLogedIn.role == "AhliWaris") {
+                opsiMenu = {
+                    "Pilih Berkas Keluarga Anda",
+                    "Lihat Pembagian Waris & Status Klaim",
+                    "Unduh SKHW Keluarga (HTML/PDF)",
+                    "Logout", "Keluar Aplikasi"
+                };
+            }
+
+            int pil = menuInteraktif(header, opsiMenu);
+
+            if (userLogedIn.role == "Notaris") {
+                if (pil == 0) { 
+                    // FITUR AUTO SCAN FOLDER (NOTARIS)
+                    vector<string> listFile;
+                    string pathFolder = "../database/";
+                    if (fs::exists(pathFolder)) {
+                        for (const auto& entry : fs::directory_iterator(pathFolder)) {
+                            string namaFile = entry.path().filename().string();
+                            if (namaFile.find(".txt") != string::npos && namaFile != "user.txt") {
+                                listFile.push_back(namaFile);
+                            }
+                        }
+                    }
+                    listFile.push_back("[ + Buat Berkas Kasus Baru ]");
+                    listFile.push_back("[ Batal ]");
+
+                    int pilFile = menuInteraktif("DAFTAR BERKAS KASUS", listFile);
+                    if (pilFile == (int)listFile.size() - 2) { 
+                        system("clear");
+                        cout << "Ketik Nama Kasus Baru (Tanpa spasi, misal 'Bahlil'): ";
+                        string namaBaru;
+                        cin >> namaBaru;
+                        cin.ignore(10000, '\n');
+                        kasusAktif = namaBaru + ".txt";
+                    } else if (pilFile != (int)listFile.size() - 1) { 
+                        kasusAktif = listFile[pilFile];
+                    }
                 }
+                else if (pil == 1) menuCRUDRahmat(kasusAktif); 
+                else if (pil == 2) menuKalkulatorWaris(kasusAktif);
+                else if (pil == 3) eksporSuratNotaris(kasusAktif);
+                else if (pil == 4) menuVerifikasiKlaimNotaris(kasusAktif);
+                else if (pil == 5) isLogout = true;
+                else if (pil == 6) { system("clear"); cout << "\nSampai jumpa, Notaris!\n"; cin.get(); return 0; }
             } 
             else if (userLogedIn.role == "AhliWaris") {
-                if (pilihanMenuStr == "1") {
-                    clearScr();
-                    lihatInformasiPorsiWaris(); 
-                } else if (pilihanMenuStr == "2") {
-                    clearScr();
-                    eksporSuratAhliWaris();
-                } else if (pilihanMenuStr == "9") {
-                    isLogout = true;
-                } else if (pilihanMenuStr == "0") {
-                    clearScr();
-                    cout << "\nKeluar dari aplikasi. Sampai jumpa, Notaris!\n";
-                    jeda();
-                    return 0;
-                } else {
-                    cout << " [!] Error: Pilihan tidak valid!\n";
-                    jeda();
+                if (pil == 0) { 
+                    // FITUR AUTO SCAN FOLDER (AHLI WARIS)
+                    vector<string> listFile;
+                    string pathFolder = "../database/";
+                    if (fs::exists(pathFolder)) {
+                        for (const auto& entry : fs::directory_iterator(pathFolder)) {
+                            string namaFile = entry.path().filename().string();
+                            if (namaFile.find(".txt") != string::npos && namaFile != "user.txt" && namaFile != "kasus_default.txt") {
+                                listFile.push_back(namaFile);
+                            }
+                        }
+                    }
+                    listFile.push_back("[ Batal ]");
+
+                    int pilFile = menuInteraktif("PILIH BERKAS KELUARGA ANDA", listFile);
+                    if (pilFile != (int)listFile.size() - 1) {
+                        kasusAktif = listFile[pilFile];
+                    }
                 }
+                else if (pil == 1) lihatInformasiPorsiWaris(kasusAktif); 
+                else if (pil == 2) eksporSuratAhliWaris(kasusAktif);
+                else if (pil == 3) isLogout = true;
+                else if (pil == 4) { system("clear"); cout << "\nSampai jumpa, Ahli Waris!\n"; cin.get(); return 0; }
             }
-
-        } while (!isLogout); 
+        } while (!isLogout);
     }
-
     return 0;
 }
