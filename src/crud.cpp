@@ -1,47 +1,12 @@
 #include "../include/crud.h"
 #include "../include/logic.h"
+#include "../include/ui.h" // Engine UI
 #include <iostream>
 #include <fstream>
 #include <sstream>
 #include <iomanip>
-#include <algorithm>
-#include <limits>
 
 using namespace std;
-
-void clearScr() {
-#ifdef _WIN32
-    system("cls");
-#else
-    system("clear");
-#endif
-}
-
-void jeda() {
-    cout << "\nTekan \"Enter\" untuk melanjutkan...";
-    cin.get(); 
-}
-
-// FUNGSI VALIDASI INPUT (ANTI HURUF/SYMBOL)
-double inputDoubleAman() {
-    double nilai;
-    while (!(cin >> nilai)) {
-        cout << "       [!] Error: Masukkan angka yang valid (tanpa titik/koma/huruf)!\n       Ulangi: ";
-        cin.clear();
-        cin.ignore(numeric_limits<streamsize>::max(), '\n');
-    }
-    return nilai;
-}
-
-int inputIntAman() {
-    int nilai;
-    while (!(cin >> nilai)) {
-        cout << " [!] Error: Masukkan angka yang valid!\n Pilihan: ";
-        cin.clear();
-        cin.ignore(numeric_limits<streamsize>::max(), '\n');
-    }
-    return nilai;
-}
 
 void loadSemuaData(const string& namaFile, string& namaPewaris, vector<Aset>& daftarAset, vector<AhliWaris>& daftarWaris) {
     ifstream file("../database/" + namaFile);
@@ -49,37 +14,28 @@ void loadSemuaData(const string& namaFile, string& namaPewaris, vector<Aset>& da
         namaPewaris = "-";
         return;
     }
-
-    string baris;
-    string mode = "";
+    string baris, mode = "";
     daftarAset.clear();
     daftarWaris.clear();
 
     while (getline(file, baris)) {
         if (baris.empty()) continue;
         if (baris == "[PEWARIS]" || baris == "[DAFTAR_ASET]" || baris == "[DAFTAR_KELUARGA]") {
-            mode = baris;
-            continue;
+            mode = baris; continue;
         }
-
-        if (mode == "[PEWARIS]") {
-            namaPewaris = baris;
-        } else if (mode == "[DAFTAR_ASET]") {
+        if (mode == "[PEWARIS]") namaPewaris = baris;
+        else if (mode == "[DAFTAR_ASET]") {
             stringstream ss(baris);
             string namaAset, stringNilai;
-            getline(ss, namaAset, ';');
-            getline(ss, stringNilai, ';');
+            getline(ss, namaAset, ';'); getline(ss, stringNilai, ';');
             daftarAset.push_back({namaAset, stod(stringNilai)});
-        } else if (mode == "[DAFTAR_KELUARGA]") {
+        } 
+        else if (mode == "[DAFTAR_KELUARGA]") {
             stringstream ss(baris);
-            string namaWaris, hubungan, stringPorsi, stringKlaim;
-            getline(ss, namaWaris, ';');
-            getline(ss, hubungan, ';');
-            getline(ss, stringPorsi, ';');
-            getline(ss, stringKlaim, ';');
-            double porsi = stringPorsi.empty() ? 0 : stod(stringPorsi);
-            bool klaim = (stringKlaim == "1");
-            daftarWaris.push_back({namaWaris, hubungan, porsi, klaim});
+            string namaWaris, hub, strPorsi, strKlaim;
+            getline(ss, namaWaris, ';'); getline(ss, hub, ';');
+            getline(ss, strPorsi, ';'); getline(ss, strKlaim, ';');
+            daftarWaris.push_back({namaWaris, hub, strPorsi.empty() ? 0 : stod(strPorsi), (strKlaim == "1")});
         }
     }
     file.close();
@@ -100,57 +56,6 @@ void simpanSemuaData(const string& namaFile, const string& namaPewaris, const ve
     file.close();
 }
 
-void prosesInputSistemWarisan(const string& namaFile, string& namaPewaris, vector<Aset>& daftarAset, vector<AhliWaris>& daftarWaris) {
-    cout << "\n==================================================\n";
-    cout << "          PENCATATAN DATA WARIS (" << namaFile << ")\n";
-    cout << "==================================================\n";
-    
-    if (namaPewaris == "-" || namaPewaris.empty()) {
-        cout << " [1] Masukkan Nama Pewaris: ";
-        getline(cin >> ws, namaPewaris);
-    } else {
-        cout << " [1] Nama Pewaris: " << namaPewaris << " (Sudah Tercatat)\n";
-    }
-    
-    cout << "\n [2] Masukkan Daftar Aset (Ketik 'selesai' untuk menyudahi)\n";
-    while (true) {
-        Aset asetBaru;
-        cout << "     - Nama Aset : ";
-        getline(cin >> ws, asetBaru.nama);
-        if (asetBaru.nama == "selesai" || asetBaru.nama == "Selesai") break;
-        cout << "       Nilai (Rp): ";
-        asetBaru.nilaiRupiah = inputDoubleAman();
-        daftarAset.push_back(asetBaru);
-    }
-
-    cout << "\n [3] Masukkan Daftar Anggota Keluarga (Ketik 'selesai' untuk menyudahi)\n";
-    while (true) {
-        AhliWaris warisBaru;
-        cout << "     - Nama Anggota Keluarga: ";
-        getline(cin >> ws, warisBaru.nama);
-        if (warisBaru.nama == "selesai" || warisBaru.nama == "Selesai") break;
-        
-        cout << "       Pilih Hubungan:\n";
-        cout << "       1. Istri\n       2. Ayah\n       3. Ibu\n       4. Anak Laki-laki\n       5. Anak Perempuan\n";
-        cout << "       Pilihan (1-5)        : ";
-        int pilHub = inputIntAman();
-        if(pilHub == 1) warisBaru.hubungan = "Istri";
-        else if(pilHub == 2) warisBaru.hubungan = "Ayah";
-        else if(pilHub == 3) warisBaru.hubungan = "Ibu";
-        else if(pilHub == 4) warisBaru.hubungan = "Anak Laki-laki";
-        else if(pilHub == 5) warisBaru.hubungan = "Anak Perempuan";
-        else warisBaru.hubungan = "Lainnya";
-
-        warisBaru.porsiUang = 0; 
-        warisBaru.isKlaim = false;
-        daftarWaris.push_back(warisBaru);
-    }
-
-    simpanSemuaData(namaFile, namaPewaris, daftarAset, daftarWaris);
-    cout << "\n [v] Data Berhasil Ditambahkan ke Kasus ini!\n";
-}
-
-// INI ADALAH FUNGSI YANG TADI DISINGKAT, SEKARANG SUDAH UTUH SAMA PERSIS 100%
 void tampilkanRingkasanData(const string& namaPewaris, const vector<Aset>& daftarAset, const vector<AhliWaris>& daftarWaris) {
     cout << "\n=======================================================\n";
     cout << "              RINGKASAN DATA PEWARISAN                 \n";
@@ -163,67 +68,110 @@ void tampilkanRingkasanData(const string& namaPewaris, const vector<Aset>& dafta
     if (daftarAset.empty()) cout << "   (Belum ada data aset)\n";
     for (size_t i = 0; i < daftarAset.size(); ++i) {
         cout << "   " << (i+1) << ". " << left << setw(18) << daftarAset[i].nama 
-             << " : " << formatRupiah(daftarAset[i].nilaiRupiah) << "\n";
+             << " : Rp. " << formatRupiah(daftarAset[i].nilaiRupiah) << "\n";
         totalAset += daftarAset[i].nilaiRupiah;
     }
     cout << "   -------------------------------------------- +\n";
-    cout << "   TOTAL NILAI ASET   : " << formatRupiah(totalAset) << "\n\n";
+    cout << "   TOTAL NILAI ASET   : Rp. " << formatRupiah(totalAset) << "\n\n";
 
     cout << " DAFTAR AHLI WARIS & PORSI BAGIAN:\n";
     if (daftarWaris.empty()) cout << "   (Belum ada data keluarga)\n";
     for (size_t i = 0; i < daftarWaris.size(); ++i) {
         cout << "   " << (i+1) << ". " << left << setw(15) << daftarWaris[i].nama 
-             << " (" << setw(10) << daftarWaris[i].hubungan << ") -> Porsi: " 
-             << formatRupiah(daftarWaris[i].porsiUang) 
-             << (daftarWaris[i].porsiUang > 0 ? (daftarWaris[i].isKlaim ? " [Sudah Diklaim]" : " [Belum Diklaim]") : "") << "\n";
+             << " (" << setw(10) << daftarWaris[i].hubungan << ") -> Porsi: Rp. " 
+             << formatRupiah(daftarWaris[i].porsiUang) << "\n";
     }
     cout << "=======================================================\n";
+    cout << "Tekan Enter untuk kembali..."; cin.get();
 }
 
-void ubahData(const string& namaFile, string& namaPewaris, vector<Aset>& daftarAset, vector<AhliWaris>& daftarWaris) {
-    clearScr();
-    cout << "\n--- EDIT DATA KASUS ---\n";
-    cout << " 1. Ubah Nama Pewaris\n 2. Ubah Salah Satu Aset\n 3. Ubah Salah Satu Keluarga\n Pilihan: ";
-    int pilihan = inputIntAman();
-    jeda();
+void menuCRUDRahmat(const string& namaFile) {
+    string namaPewaris = "-";
+    vector<Aset> daftarAset;
+    vector<AhliWaris> daftarWaris;
+    loadSemuaData(namaFile, namaPewaris, daftarAset, daftarWaris);
 
-    if (pilihan == 1) {
-        cout << " Masukkan Nama Pewaris Baru: ";
-        getline(cin >> ws, namaPewaris);
-    } else if (pilihan == 2 && !daftarAset.empty()) {
-        cout << " Pilih nomor aset: "; 
-        int no = inputIntAman();
-        if (no > 0 && no <= static_cast<int>(daftarAset.size())) {
-            cout << " Nama baru: "; getline(cin >> ws, daftarAset[no-1].nama);
-            cout << " Nilai baru (Rp): "; daftarAset[no-1].nilaiRupiah = inputDoubleAman();
-        }
-    } else if (pilihan == 3 && !daftarWaris.empty()) {
-        cout << " Pilih nomor keluarga: "; 
-        int no = inputIntAman();
-        if (no > 0 && no <= static_cast<int>(daftarWaris.size())) {
-            cout << " Nama baru: "; getline(cin >> ws, daftarWaris[no-1].nama);
-            cout << " Hubungan baru (Ketik: Ayah/Ibu/Istri/Anak Laki-laki/Anak Perempuan): "; 
-            getline(cin >> ws, daftarWaris[no-1].hubungan);
+    while (true) {
+        vector<string> opsiMenu = {
+            "1. Input / Tambah Data Aset & Keluarga",
+            "2. Tampilkan Ringkasan Berkas Kasus",
+            "3. Edit / Ubah Komponen Kasus",
+            "4. Hapus Komponen Kasus",
+            "0. Kembali ke Menu Utama"
+        };
+        int pilihanIndex = menuInteraktif("MENU KELOLA DATA (" + namaFile + ")", opsiMenu);
+
+        if (pilihanIndex == 0) {
+            // INPUT DATA (TANPA NGETIK "SELESAI")
+            system("clear");
+            if (namaPewaris == "-" || namaPewaris.empty()) {
+                cout << " Masukkan Nama Pewaris: "; getline(cin >> ws, namaPewaris);
+            }
+            // Tambah Aset
+            while (true) {
+                if (menuInteraktif("Tambah Aset Baru?", {"Ya", "Tidak (Selesai)"}) == 1) break;
+                Aset asetBaru;
+                system("clear"); cout << "\n--- TAMBAH ASET ---\n";
+                cout << " Nama Aset : "; getline(cin >> ws, asetBaru.nama);
+                asetBaru.nilaiRupiah = inputRupiahLive();
+                daftarAset.push_back(asetBaru);
+            }
+            // Tambah Keluarga
+            while (true) {
+                if (menuInteraktif("Tambah Anggota Keluarga?", {"Ya", "Tidak (Selesai)"}) == 1) break;
+                AhliWaris wBaru;
+                system("clear"); cout << "\n--- TAMBAH KELUARGA ---\n";
+                cout << " Nama Anggota: "; getline(cin >> ws, wBaru.nama);
+                vector<string> opsiHub = {"Istri", "Ayah", "Ibu", "Anak Laki-laki", "Anak Perempuan"};
+                int pilHub = menuInteraktif("Pilih Hubungan Keluarga", opsiHub);
+                wBaru.hubungan = opsiHub[pilHub];
+                wBaru.porsiUang = 0; wBaru.isKlaim = false;
+                daftarWaris.push_back(wBaru);
+            }
+            simpanSemuaData(namaFile, namaPewaris, daftarAset, daftarWaris);
+            
+        } else if (pilihanIndex == 1) {
+            system("clear"); tampilkanRingkasanData(namaPewaris, daftarAset, daftarWaris);
+        } else if (pilihanIndex == 2) {
+            // EDIT DATA INTERAKTIF
+            int pilEdit = menuInteraktif("EDIT DATA KASUS", {"Ubah Nama Pewaris", "Ubah Aset", "Ubah Keluarga", "Batal"});
+            if (pilEdit == 0) {
+                system("clear"); cout << "Nama Baru: "; getline(cin >> ws, namaPewaris);
+            } else if (pilEdit == 1 && !daftarAset.empty()) {
+                vector<string> opt; for(auto& a: daftarAset) opt.push_back(a.nama + " (Rp." + formatRupiah(a.nilaiRupiah) + ")");
+                opt.push_back("Batal");
+                int no = menuInteraktif("Pilih Aset:", opt);
+                if(no != opt.size()-1) {
+                    system("clear"); cout << "Nama Baru: "; getline(cin >> ws, daftarAset[no].nama);
+                    daftarAset[no].nilaiRupiah = inputRupiahLive();
+                }
+            } else if (pilEdit == 2 && !daftarWaris.empty()) {
+                vector<string> opt; for(auto& k: daftarWaris) opt.push_back(k.nama + " (" + k.hubungan + ")");
+                opt.push_back("Batal");
+                int no = menuInteraktif("Pilih Keluarga:", opt);
+                if(no != opt.size()-1) {
+                    system("clear"); cout << "Nama Baru: "; getline(cin >> ws, daftarWaris[no].nama);
+                    vector<string> oHub = {"Istri", "Ayah", "Ibu", "Anak Laki-laki", "Anak Perempuan"};
+                    daftarWaris[no].hubungan = oHub[menuInteraktif("Pilih Hubungan:", oHub)];
+                }
+            }
+            simpanSemuaData(namaFile, namaPewaris, daftarAset, daftarWaris);
+
+        } else if (pilihanIndex == 3) {
+            // HAPUS DATA INTERAKTIF
+            int pilHapus = menuInteraktif("HAPUS DATA KASUS", {"Hapus Aset", "Hapus Keluarga", "Batal"});
+            if (pilHapus == 0 && !daftarAset.empty()) {
+                vector<string> opt; for(auto& a: daftarAset) opt.push_back(a.nama); opt.push_back("Batal");
+                int no = menuInteraktif("Hapus Aset:", opt);
+                if(no != opt.size()-1) daftarAset.erase(daftarAset.begin() + no);
+            } else if (pilHapus == 1 && !daftarWaris.empty()) {
+                vector<string> opt; for(auto& k: daftarWaris) opt.push_back(k.nama); opt.push_back("Batal");
+                int no = menuInteraktif("Hapus Keluarga:", opt);
+                if(no != opt.size()-1) daftarWaris.erase(daftarWaris.begin() + no);
+            }
+            simpanSemuaData(namaFile, namaPewaris, daftarAset, daftarWaris);
+        } else if (pilihanIndex == 4) {
+            break;
         }
     }
-    simpanSemuaData(namaFile, namaPewaris, daftarAset, daftarWaris);
-    cout << " [v] Data berhasil diperbarui!\n";
-}
-
-void hapusData(const string& namaFile, string& namaPewaris, vector<Aset>& daftarAset, vector<AhliWaris>& daftarWaris) {
-    clearScr(); 
-    cout << "\n--- HAPUS DATA KASUS ---\n";
-    cout << " 1. Hapus Salah Satu Aset\n 2. Hapus Salah Satu Keluarga\n Pilihan: ";
-    int pilihan = inputIntAman();
-    jeda();
-
-    if (pilihan == 1 && !daftarAset.empty()) {
-        cout << " Pilih nomor aset: "; int no = inputIntAman();
-        if (no > 0 && no <= static_cast<int>(daftarAset.size())) daftarAset.erase(daftarAset.begin() + (no-1));
-    } else if (pilihan == 2 && !daftarWaris.empty()) {
-        cout << " Pilih nomor keluarga: "; int no = inputIntAman();
-        if (no > 0 && no <= static_cast<int>(daftarWaris.size())) daftarWaris.erase(daftarWaris.begin() + (no-1));
-    }
-    simpanSemuaData(namaFile, namaPewaris, daftarAset, daftarWaris);
-    cout << " [v] Data berhasil dihapus!\n";
 }
