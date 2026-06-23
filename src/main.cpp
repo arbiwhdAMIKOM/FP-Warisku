@@ -19,6 +19,7 @@ void clearScr();
 int main() {
     vector<User> databaseUser;
     loadUsersDariFile(databaseUser);
+    string kasusAktif = "kasus_default.txt"; 
 
     while (true) {
         User userLogedIn;

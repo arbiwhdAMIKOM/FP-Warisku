@@ -11,8 +11,7 @@ using namespace std;
 void loadSemuaData(const string& namaFile, string& namaPewaris, vector<Aset>& daftarAset, vector<AhliWaris>& daftarWaris) {
     ifstream file("../database/" + namaFile);
     if (!file.is_open()) {
-        namaPewaris = "-";
-        return;
+        namaPewaris = "-"; statusKlaim = "BELUM DIKLAIM"; nomorRekeningAhliWaris = ""; statusPerhitungan = false; return;
     }
     string baris, mode = "";
     daftarAset.clear();
@@ -42,29 +41,20 @@ void loadSemuaData(const string& namaFile, string& namaPewaris, vector<Aset>& da
 }
 
 void simpanSemuaData(const string& namaFile, const string& namaPewaris, const vector<Aset>& daftarAset, const vector<AhliWaris>& daftarWaris) {
-    ofstream file("../database/" + namaFile, ios::trunc);
-    if (!file.is_open()) return;
+    ofstream file("../database/" + namaFile, ios::trunc); if (!file.is_open()) return;
+    file << "[METADATA]\n" << statusKlaim << ";" << nomorRekeningAhliWaris << ";" << (statusPerhitungan ? "1" : "0") << "\n\n";
     file << "[PEWARIS]\n" << namaPewaris << "\n\n";
     file << "[DAFTAR_ASET]\n";
-    for (const auto& aset : daftarAset) {
-        file << aset.nama << ";" << fixed << setprecision(0) << aset.nilaiRupiah << "\n";
-    }
+    for (const auto& aset : daftarAset) file << aset.nama << ";" << fixed << setprecision(0) << aset.nilaiRupiah << ";" << aset.kategori << ";" << aset.detailKategori << "\n";
     file << "\n[DAFTAR_KELUARGA]\n";
-    for (const auto& waris : daftarWaris) {
-        file << waris.nama << ";" << waris.hubungan << ";" << fixed << setprecision(0) << waris.porsiUang << ";" << (waris.isKlaim ? "1" : "0") << "\n";
-    }
+    for (const auto& waris : daftarWaris) file << waris.nama << ";" << waris.hubungan << ";" << fixed << setprecision(0) << waris.porsiUang << ";" << (waris.isKlaim ? "1" : "0") << ";" << waris.tanggalLahir << ";" << waris.pekerjaan << "\n";
     file.close();
 }
 
 void tampilkanRingkasanData(const string& namaPewaris, const vector<Aset>& daftarAset, const vector<AhliWaris>& daftarWaris) {
-    cout << "\n=======================================================\n";
-    cout << "              RINGKASAN DATA PEWARISAN                 \n";
-    cout << "=======================================================\n";
-    cout << "       PEWARIS       : " << namaPewaris << "\n";
-    cout << "-------------------------------------------------------\n";
-    
-    double totalAset = 0;
-    cout << " DAFTAR ASET:\n";
+    cout << "\n=======================================================\n               RINGKASAN DATA PEWARISAN                 \n=======================================================\n";
+    cout << "       PEWARIS       : " << namaPewaris << "\n       STATUS BERKAS : " << statusKlaim << "\n-------------------------------------------------------\n";
+    double totalAset = 0; cout << " DAFTAR INVENTARIS ASET:\n";
     if (daftarAset.empty()) cout << "   (Belum ada data aset)\n";
     for (size_t i = 0; i < daftarAset.size(); ++i) {
         cout << "   " << (i+1) << ". " << left << setw(18) << daftarAset[i].nama 

@@ -2,25 +2,27 @@
 #define MODELS_H
 
 #include <string>
-using namespace std;
 
-// fitur Login (Auth)
 struct User {
-    string username;
-    string password;
-    string role; // "Notaris" atau "AhliWaris"
+    std::string username;
+    std::string password;
+    std::string role; 
 };
 
 struct Aset {
-    string nama;
+    std::string nama;
     double nilaiRupiah;
+    std::string kategori;       // "Kendaraan", "Rumah/Tanah", atau "Lainnya"
+    std::string detailKategori; // Menampung Brand (Kendaraan) atau Lokasi & Luas (Rumah/Tanah)
 };
 
 struct AhliWaris {
     std::string nama;
-    std::string hubungan;
+    std::string hubungan; 
     double porsiUang;
     bool isKlaim;
+    std::string tanggalLahir; // Format wajib: DD-MM-YYYY
+    std::string pekerjaan;    
 };
 
 #endif

@@ -106,6 +106,7 @@ void menuKalkulatorWaris(const string& namaFile) {
     simpanSemuaData(namaFile, namaPewaris, daftarAset, daftarWaris);
     statusPerhitungan = true;
     statusKlaim = "SIAP DIKLAIM";
+    simpanSemuaData(namaFile, namaPewaris, daftarAset, daftarWaris);
 
     cout << "\n[Sukses] Kalkulasi Selesai & Tersimpan ke: " << namaFile << endl;
     cout << "Total Harta: Rp. " << formatRupiah(totalHartaWarisan) << "\n";
