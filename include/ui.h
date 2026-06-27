@@ -95,4 +95,29 @@ inline double inputRupiahLive() {
     }
 }
 
+// Fungsi Input Live Tanggal Lahir (Otomatis Kasih Strip Saat Ngetik)
+inline string inputTanggalLive() {
+    string digits = "";
+    while (true) {
+        cout << "\r Tanggal Lahir (DD-MM-YYYY): ";
+        string display = "";
+        // Algoritma penyusunan karakter strip otomatis
+        for (size_t i = 0; i < digits.length(); ++i) {
+            if (i == 2 || i == 4) display += "-";
+            display += digits[i];
+        }
+        cout << display << " \033[K";
+
+        int key = _getch();
+        if (key == '\n' || key == '\r') {
+            cout << endl;
+            return display; // Mengembalikan data string berformat DD-MM-YYYY yang utuh
+        } else if (key == 127 || key == 8) { // Fitur hapus (Backspace/Delete)
+            if (!digits.empty()) digits.pop_back();
+        } else if (key >= '0' && key <= '9') {
+            if (digits.length() < 8) digits += (char)key; // Batasi maksimal 8 digit angka murni
+        }
+    }
+}
+
 #endif
