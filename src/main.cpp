@@ -10,6 +10,9 @@
 using namespace std;
 namespace fs = std::filesystem; 
 
+void jeda();
+void clearScr();
+
 int main() {
     vector<User> databaseUser;
     loadUsersDariFile(databaseUser);
@@ -33,6 +36,7 @@ int main() {
 
         system("clear"); cout << "\n [v] Login Sukses! Selamat Datang, " << userLogedIn.username << " (" << userLogedIn.role << ")\n"; cin.get();
         bool isLogout = false;
+        string kasusAktif = "kasus_default.txt"; 
 
         do {
             string header = "MENU " + userLogedIn.role + " | Kasus Berkas Aktif: " + kasusAktif;

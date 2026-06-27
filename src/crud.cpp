@@ -95,6 +95,7 @@ void tampilkanRingkasanData(const string& namaPewaris, const vector<Aset>& dafta
     if (daftarWaris.empty()) cout << "   (Belum ada data keluarga)\n";
     for (size_t i = 0; i < daftarWaris.size(); ++i) cout << "   " << (i+1) << ". " << left << setw(12) << daftarWaris[i].nama << " | TTL: " << setw(11) << daftarWaris[i].tanggalLahir << " | Kerja: " << setw(10) << daftarWaris[i].pekerjaan << " | Peran: " << setw(14) << daftarWaris[i].hubungan << " -> Porsi: Rp. " << formatRupiah(daftarWaris[i].porsiUang) << "\n";
     cout << "=======================================================\n";
+    cout << "Tekan Enter untuk kembali..."; cin.get();
 }
 
 void menuCRUDRahmat(const string& namaFile) {

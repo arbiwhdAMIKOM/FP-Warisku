@@ -106,7 +106,7 @@ inline string inputTanggalLive() {
             if (i == 2 || i == 4) display += "-";
             display += digits[i];
         }
-        cout << display << " \033[K"; // Bersihkan sisa ruang di sebelah kanan kursor
+        cout << display << " \033[K";
 
         int key = _getch();
         if (key == '\n' || key == '\r') {
