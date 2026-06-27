@@ -80,9 +80,7 @@ int main() {
                 else if (pil == 3) eksporSuratNotaris(kasusAktif);
                 else if (pil == 4) menuVerifikasiKlaimNotaris(kasusAktif);
                 else if (pil == 5) { 
-                    // ========================================================
-                    // INDEKS 5: ENGINE INTERAKTIF KELOLA FILE (RENAME & HAPUS)
-                    // ========================================================
+                    // INDEKS 5: KELOLA FILE (RENAME & HAPUS)
                     vector<string> listFile; string pathFolder = "../database/";
                     if (fs::exists(pathFolder)) {
                         for (const auto& entry : fs::directory_iterator(pathFolder)) {

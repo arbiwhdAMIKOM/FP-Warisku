@@ -126,7 +126,7 @@ void eksporSuratNotaris(const string& namaFile) {
     if (file.is_open()) {
         file << "<!DOCTYPE html><html><head><meta charset='UTF-8'><title>Surat Ketetapan Notaris</title>";
         file << "<style>body{font-family:'Times New Roman',serif; margin:50px auto; max-width:850px; line-height:1.6;} .kop{text-align:center; border-bottom:3px double #000; padding-bottom:10px; margin-bottom:20px;} table{width:100%; border-collapse:collapse; margin:15px 0;} th,td{border:1px solid #000; padding:10px; text-align:left;} th{background-color:#f2f2f2; font-weight:bold;}</style></head><body>";
-        file << "<div class='kop'><h2>BERITA ACARA LEGALITAS NOTARIS</h2><p>Pejabat Pembuat Akta Waris Terintegrasi CLI | Versi Pro 2026</p></div>";
+        file << "<div class='kop'><h2>BERITA ACARA LEGALITAS NOTARIS</h2><p>Pejabat Pembuat Akta Waris | Warisku</p></div>";
         file << "<p><b>ID Berkas Kasus:</b> " << namaFile << "<br><b>Status Validasi Hukum:</b> " << statusKlaim << "</p>";
         
         file << "<h3>I. Identitas Pewaris</h3><table><tr><th width='30%'>Nama Pewaris Berpulang</th><td><b>" << namaPewaris << "</b></td></tr><tr><th>Total Nilai Bersih Harta</th><td><b>Rp. " << formatRupiah(totalHartaWarisan) << "</b></td></tr></table>";
@@ -165,8 +165,8 @@ void eksporSuratAhliWaris(const string& namaFile) {
         
         file << "<div class='kop-surat'>";
         file << "<h1>Kantor Pejabat Notaris Pembuat Akta Waris</h1>";
-        file << "<p>Jl. Amikom Raya No. 123, Yogyakarta | Telp: (0274) 555-1234 | Fax: (0274) 555-4321</p>";
-        file << "<p>Email: official@warisku.notary.id | Website: www.warisku-cli.pro</p>";
+        file << "<p>Jl. Ring Road Utara, Condong Catur, Sleman, Yogyakarta | Telp: (0274) 884201-207 | Fax: (0274) 884208</p>";
+        file << "<p>Email: humas@amikom.ac.id | Website: www.amikom.ac.id</p>";
         file << "</div>";
 
         file << "<h3 style='text-align:center; text-decoration:underline;'>SURAT KETERANGAN HAK WARIS (SKHW)</h3>";
@@ -191,7 +191,7 @@ void eksporSuratAhliWaris(const string& namaFile) {
         file << "Nomor Rekening Tujuan     : " << (nomorRekeningAhliWaris.empty() ? "<i>(Belum mendaftarkan nomor rekening)</i>" : nomorRekeningAhliWaris) << "</div>";
         
         file << "<br><p>Surat resmi ini dicetak secara digital untuk dapat dipergunakan sebagaimana mestinya untuk keperluan validasi perbankan.</p>";
-        file << "<br><table style='border:none; width:100%;'><tr style='border:none;'><td style='border:none; width:60%;'></td><td style='border:none; text-align:center;'>Disahkan secara Digital oleh:<br><b>Sistem Otomasi Warisku Pro</b></td></tr></table></body></html>";
+        file << "<br><table style='border:none; width:100%;'><tr style='border:none;'><td style='border:none; width:60%;'></td><td style='border:none; text-align:center;'>Disahkan secara Digital oleh:<br><b>Sistem Otomasi Warisku</b></td></tr></table></body></html>";
         file.close();
         cout << "\n[Sukses] Dokumen Surat Resmi Ahli Waris (HTML Ber-KOP) Berhasil Dicetak: " << namaHTML << "\nTekan Enter...";
     }
@@ -201,11 +201,10 @@ void eksporSuratAhliWaris(const string& namaFile) {
 void lihatInformasiPorsiWaris(const string& namaFile) {
     string nPewaris; vector<Aset> dAset; vector<AhliWaris> dWaris;
     loadSemuaData(namaFile, nPewaris, dAset, dWaris);
-
+    system("clear");
     if (!statusPerhitungan || dWaris.empty()) {
         cout << "\n[!] Notaris belum menghitung porsi waris berkas ini.\nTekan Enter..."; cin.get(); return;
     }
-    system("clear");
     cout << "\n========================================\n       LIHAT PORSI PEMBAGIAN WARIS      \n========================================\n";
     cout << "Pewaris : " << nPewaris << "\n----------------------------------------\n";
     for (size_t i=0; i<dWaris.size(); ++i) {
@@ -216,7 +215,7 @@ void lihatInformasiPorsiWaris(const string& namaFile) {
     if (statusKlaim == "SIAP DIKLAIM" || statusKlaim == "BELUM DIKLAIM") {
         if (menuInteraktif("Cairkan porsi dana sekarang?", {"Ya, Cairkan", "Nanti Saja"}) == 0) {
             cout << "-> Masukkan Nomor Rekening Bank Anda: "; cin >> nomorRekeningAhliWaris;
-            cin.ignore(10000, '\n'); // <-- FIX BUG BUFFER SISA ENTER
+            cin.ignore(10000, '\n');
             statusKlaim = "MENUNGGU VERIFIKASI NOTARIS"; 
             simpanSemuaData(namaFile, nPewaris, dAset, dWaris); 
             cout << "\n[Sukses] Pengajuan klaim Anda telah dikirim!\n";
@@ -228,7 +227,6 @@ void menuVerifikasiKlaimNotaris(const string& namaFile) {
     string nPewaris; vector<Aset> dAset; vector<AhliWaris> dWaris;
     loadSemuaData(namaFile, nPewaris, dAset, dWaris); 
 
-    system("clear");
     cout << "\n========================================\n       HALAMAN VERIFIKASI KLAIM        \n========================================\n";
     if (statusKlaim == "MENUNGGU VERIFIKASI NOTARIS") {
         cout << "[Pemberitahuan] Ada 1 Klaim Pencairan Terdeteksi!\nRekening Ahli Waris: " << nomorRekeningAhliWaris << "\n";

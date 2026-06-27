@@ -123,7 +123,7 @@ void menuCRUDRahmat(const string& namaFile) {
                 
                 // INJEKSI LIVE TANGGAL INPUT BARU
                 while (true) {
-                    string rawTanggal = inputTanggalLive(); // Memanggil UI Live Masking
+                    string rawTanggal = inputTanggalLive();
                     if (validasiDanFormatTanggal(rawTanggal, wBaru.tanggalLahir)) break;
                     cout << " [!] Error: Tanggal lahir tidak valid secara kalender! Coba lagi.\n";
                 }
